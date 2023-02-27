@@ -1,12 +1,12 @@
-import { Snap, MetamaskBTCRpcRequest } from './interface';
-import { getHathorXPubKey } from './rpc';
+import { Snap, MetamaskHTRRpcRequest } from './interface';
+import { getHathorXPubKey, getHathorAuthXPubKey } from './rpc';
 import { SnapError, RequestErrors } from './errors';
 
 declare let snap: Snap;
 
 export type RpcRequest = {
   origin: string;
-  request: MetamaskBTCRpcRequest;
+  request: MetamaskHTRRpcRequest;
 };
 
 export const onRpcRequest = async ({origin, request}: RpcRequest) => {
@@ -17,6 +17,11 @@ export const onRpcRequest = async ({origin, request}: RpcRequest) => {
     // signMessage
     case 'htr_getxpubkey':
       return getHathorXPubKey(
+        origin,
+        snap,
+      );
+    case 'htr_getauthxpubkey':
+      return getHathorAuthXPubKey(
         origin,
         snap,
       );

@@ -27,6 +27,7 @@
 
     <button class="connect">Connect</button>
     <button class="getHathorXPubKey">Get hathor Extended Public Key</button>
+    <button class="getHathorAuthXPubKey">Get hathor Auth xpubkey</button>
 
     <div id="extendedPubKey" style="margin-top:5px"></div>
     <div id="mfp" style="margin-top:5px"></div>
@@ -39,9 +40,11 @@
 
     const connectButton = document.querySelector('button.connect')
     const getHathorXPubKeyButton = document.querySelector('button.getHathorXPubKey');
+    const getHathorAuthXPubKeyButton = document.querySelector('button.getHathorAuthXPubKey');
 
     connectButton.addEventListener('click', connect)
     getHathorXPubKeyButton.addEventListener('click', getHathorXPubKey);
+    getHathorAuthXPubKeyButton.addEventListener('click', getHathorAuthXPubKey);
 
     async function getHathorXPubKey() {
       const response = await ethereum.request({
@@ -55,10 +58,24 @@
       })
 
       const xpubNode = document.getElementById("extendedPubKey")
-      xpubNode.textContent = `extended public key: ${response.xpub}`
-
-      console.log('Response: ', response);
+      xpubNode.textContent = `Xpubkey: ${response.xpub}`
     }
+
+    async function getHathorAuthXPubKey() {
+      const response = await ethereum.request({
+        method: 'wallet_invokeSnap',
+        params: {
+          snapId,
+          request: {
+            method: 'htr_getauthxpubkey',
+          }
+        }
+      })
+
+      const xpubNode = document.getElementById("extendedPubKey")
+      xpubNode.textContent = `Auth xpubkey: ${response.xpub}`
+    }
+
     // here we get permissions to interact with and install the snap
     async function connect () {
       await ethereum.request({

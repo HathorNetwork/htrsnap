@@ -2,6 +2,10 @@ export interface GetHathorXPubKey {
   method: 'htr_getxpubkey';
 }
 
+export interface GetHathorAuthXPubKey {
+  method: 'htr_getauthxpubkey';
+}
+
 export interface SignLNInvoice {
   method: 'btc_signLNInvoice';
   params: {
@@ -9,16 +13,17 @@ export interface SignLNInvoice {
   };
 }
 
-export type MetamaskBTCRpcRequest =
+export type MetamaskHTRRpcRequest =
   | GetHathorXPubKey
+  | GetHathorAuthXPubKey
 
-export type BTCMethodCallback = (
+export type HTRMethodCallback = (
   originString: string,
-  requestObject: MetamaskBTCRpcRequest,
+  requestObject: MetamaskHTRRpcRequest,
 ) => Promise<unknown>;
 
 export interface Snap {
-  registerRpcMessageHandler: (fn: BTCMethodCallback) => unknown;
+  registerRpcMessageHandler: (fn: HTRMethodCallback) => unknown;
   request<T>(options: {
     method: string;
     params?: unknown[] | Record<string, any>;
