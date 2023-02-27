@@ -11,12 +11,6 @@ Snaps is a system that allows developers to safely build and expand the capabili
 
 Additional information can be found [here](https://docs.metamask.io/guide/snaps.html).
 
-
-##
-
-### BitcoinSnap Integration
-If you would like to integrate BitcoinSnap into your dapp, you can make use of our npm. Refer to the following document [here](https://github.com/snapdao/btcsnap/tree/master/packages/snap).
-
 ##
 
 ### How to run HathorSnap on a wallet locally
