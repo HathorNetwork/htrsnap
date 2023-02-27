@@ -1,18 +1,19 @@
 import { panel, text, heading } from '@metamask/snaps-ui';
 import * as bip32 from 'bip32';
 import { BIP32Interface } from 'bip32';
-import { ScriptType, SLIP10Node, Snap } from '../interface';
+import { SLIP10Node, Snap } from '../interface';
 import { trimHexPrefix } from '../utils';
-import { RequestErrors, SnapError } from '../errors';
-import { convertXpub } from '../bitcoin/xpubConverter';
-import { encode, decode } from "bs58check";
+import { encode, decode } from 'bs58check';
 
 export const CRYPTO_CURVE = 'secp256k1';
 
 const hathorNetwork = {
   messagePrefix: '\x18Hathor Signed Message:\n',
   bech32: 'ht',
-  bip32: { public: 76067358, private: 55720709 },
+  bip32: {
+    public: 76067358,
+    private: 55720709,
+  },
   pubKeyHash: 40,
   scriptHash: 100,
   wif: 128
@@ -30,15 +31,10 @@ export async function getHathorXPubKey(origin: string, snap: Snap): Promise<{ xp
     },
   });
 
-  const path = [
-    "m",
-    "44'",
-    "280",
-    "0'"
-  ];
+  const path = [ 'm', '44\'', '280', '0\'' ];
 
   const slip10Node = await snap.request({
-    method: "snap_getBip32Entropy",
+    method: 'snap_getBip32Entropy',
     params: {
       path,
       curve: CRYPTO_CURVE
