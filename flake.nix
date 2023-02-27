@@ -18,7 +18,11 @@
           };
 
           nodejs = pkgs.nodejs-16_x;
-          teta = pkgs.stdenv.mkDerivation {
+
+          # Because of this bug: https://github.com/yarnpkg/yarn/issues/8405
+          # We can't use the latest yarn build, so compile the last working version (v1.19.0)
+          # from the tarball:
+          yarn = pkgs.stdenv.mkDerivation {
             name = "yarn";
             src = pkgs.fetchzip {
               url = "https://github.com/yarnpkg/yarn/releases/download/v1.19.0/yarn-v1.19.0.tar.gz";
@@ -37,7 +41,7 @@
         pkgs.devshell.mkShell {
           packages = with pkgs; [
             nodejs
-            teta
+            yarn
           ];
         };
     });
