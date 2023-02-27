@@ -1,14 +1,14 @@
 {
-  "name": "btcsnap",
-  "version": "1.3.0",
-  "description": "btcsnap: Metamask snap to manage your bitcoin",
-  "author": "aaronisme <aarondongchen@gmail.com>",
+  "name": "htrsnap",
+  "version": "0.0.1",
+  "description": "htrsnap: Metamask snap to manage your hathor",
+  "author": "André Abadesso <andre@hathor.network>",
   "homepage": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/snapdao/btcsnap"
+    "url": "https://github.com/hathornetwork/htrsnap"
   },
-  "license": "ISC",
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -54,7 +54,9 @@
     "bn.js": "^5.2.1",
     "bs58check": "^2.1.2",
     "crypto-js": "^4.1.1",
-    "light-bolt11-decoder": "^2.1.0"
+    "ecpair": "^2.1.0",
+    "light-bolt11-decoder": "^2.1.0",
+    "tiny-secp256k1": "^2.2.1"
   },
   "publishConfig": {
     "access": "public",

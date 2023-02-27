@@ -1,5 +1,6 @@
 import { panel, text, heading } from '@metamask/snaps-ui';
 import * as bip32 from 'bip32';
+import * as bitcoin from 'bitcoinjs-lib';
 import { BIP32Interface } from 'bip32';
 import { SLIP10Node, Snap } from '../interface';
 import {
@@ -10,6 +11,14 @@ import {
 } from '../utils';
 
 export const CRYPTO_CURVE = 'secp256k1';
+
+export const getAddressAtIndex = (xpubkey: string, addressIndex: number): string => {
+  const node = bip32.fromBase58(xpubkey).derive(addressIndex);
+  return bitcoin.payments.p2pkh({
+    pubkey: node.publicKey,
+    network: hathorNetwork,
+  }).address;
+};
 
 export async function getHathorXPubKey(origin: string, snap: Snap): Promise<{ xpub: string }> {
   await snap.request({

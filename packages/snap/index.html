@@ -28,6 +28,9 @@
     <button class="connect">Connect</button>
     <button class="getHathorXPubKey">Get hathor Extended Public Key</button>
     <button class="getHathorAuthXPubKey">Get hathor Auth xpubkey</button>
+    <button class="getHathorWalletId">Get hathor wallet id</button>
+    <button class="signHathorMessage">Sign hathor message</button>
+    <button class="getHathorAddresses">Get hathor addresses</button>
 
     <div id="extendedPubKey" style="margin-top:5px"></div>
     <div id="mfp" style="margin-top:5px"></div>
@@ -41,10 +44,77 @@
     const connectButton = document.querySelector('button.connect')
     const getHathorXPubKeyButton = document.querySelector('button.getHathorXPubKey');
     const getHathorAuthXPubKeyButton = document.querySelector('button.getHathorAuthXPubKey');
+    const getHathorWalletIdButton = document.querySelector('button.getHathorWalletId');
+    const signHathorMessageButton = document.querySelector('button.signHathorMessage');
+    const getHathorAddressesButton = document.querySelector('button.getHathorAddresses');
 
     connectButton.addEventListener('click', connect)
     getHathorXPubKeyButton.addEventListener('click', getHathorXPubKey);
     getHathorAuthXPubKeyButton.addEventListener('click', getHathorAuthXPubKey);
+    getHathorWalletIdButton.addEventListener('click', getHathorWalletId);
+    signHathorMessageButton.addEventListener('click', signHathorMessage);
+    getHathorAddressesButton.addEventListener('click', getHathorAddresses);
+
+    async function getHathorAddresses() {
+      const response = await ethereum.request({
+        method: 'wallet_invokeSnap',
+        params: {
+          snapId,
+          request: {
+            method: 'htr_getaddresses',
+            params: {
+              from: 0,
+              to: 19,
+            },
+          }
+        }
+      })
+
+      const xpubNode = document.getElementById("extendedPubKey")
+
+      const text = response.addresses.reduce((currText, address) => {
+        currText += `<li>${address}</li>`
+
+        return currText;
+      }, '<ul>') + '</ul>';
+
+      xpubNode.innerHTML = text;
+    }
+
+    async function signHathorMessage() {
+      const response = await ethereum.request({
+        method: 'wallet_invokeSnap',
+        params: {
+          snapId,
+          request: {
+            method: 'htr_signmessage',
+            params: {
+              message: '--',
+            },
+          }
+        }
+      })
+
+      console.log('response: ', response);
+
+      const xpubNode = document.getElementById("extendedPubKey")
+      xpubNode.textContent = `Signed message: ${response.signedMessage}`
+    }
+
+    async function getHathorWalletId() {
+      const response = await ethereum.request({
+        method: 'wallet_invokeSnap',
+        params: {
+          snapId,
+          request: {
+            method: 'htr_getwalletid',
+          }
+        }
+      })
+
+      const xpubNode = document.getElementById("extendedPubKey")
+      xpubNode.textContent = `WalletId: ${response.walletId}`
+    }
 
     async function getHathorXPubKey() {
       const response = await ethereum.request({

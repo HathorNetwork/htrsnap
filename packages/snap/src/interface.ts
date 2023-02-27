@@ -6,16 +6,31 @@ export interface GetHathorAuthXPubKey {
   method: 'htr_getauthxpubkey';
 }
 
-export interface SignLNInvoice {
-  method: 'btc_signLNInvoice';
+export interface GetHathorWalletId {
+  method: 'htr_getwalletid';
+}
+
+export interface SignHathorMessage {
+  method: 'htr_signmessage';
   params: {
-    invoice: string;
+    message: string;
   };
+}
+
+export interface GetHathorAddresses {
+  method: 'htr_getaddresses';
+  params: {
+    from: number;
+    to: number;
+  }
 }
 
 export type MetamaskHTRRpcRequest =
   | GetHathorXPubKey
   | GetHathorAuthXPubKey
+  | GetHathorWalletId
+  | GetHathorAddresses
+  | SignHathorMessage
 
 export type HTRMethodCallback = (
   originString: string,
@@ -70,5 +85,5 @@ export interface SLIP10Node {
   /**
    * The name of the curve used by the node.
    */
-  readonly curve: 'ed25519' | 'secp256k1';
+  readonly curve: 'secp256k1';
 }
