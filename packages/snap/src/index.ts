@@ -5,6 +5,7 @@ import {
   getHathorWalletId,
   signHathorMessage,
   getHathorAddresses,
+  signHathorTransaction,
 } from './rpc';
 import { SnapError, RequestErrors } from './errors';
 
@@ -46,6 +47,13 @@ export const onRpcRequest = async ({origin, request}: RpcRequest) => {
       );
     case 'htr_signmessage':
       return signHathorMessage(
+        origin,
+        snap,
+        request.params.message,
+        request.params.addressIndex,
+      );
+    case 'htr_signtransaction':
+      return signHathorTransaction(
         origin,
         snap,
         request.params.message,

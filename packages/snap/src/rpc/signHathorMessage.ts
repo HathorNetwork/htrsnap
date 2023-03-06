@@ -1,37 +1,47 @@
+import bitcoinMessage from 'bitcoinjs-message';
 import { text, heading, panel } from '@metamask/snaps-ui';
-import { HATHOR_BIP44_CODE, trimHexPrefix } from '../utils';
-import { SLIP10Node, Snap } from '../interface';
+import { hathorNetwork, addressNodeToP2PKHAddress, trimHexPrefix } from '../utils';
+import { Snap } from '../interface';
+import { getAddressAtIndex, getHathorRootNode } from './getHathorXPubKey';
+import { BIP44Node } from '@metamask/key-tree';
 
 export const CRYPTO_CURVE = 'secp256k1';
 
-export async function signHathorMessage(origin: string, snap: Snap, message: string): Promise<{ signedMessage: string }> {
+export async function signHathorMessage(
+  origin: string,
+  snap: Snap,
+  message: string,
+  addressIndex: number,
+): Promise<{ signedMessage: string }> {
+  const hathorNode = await getHathorRootNode(snap);
+  const addressNode: BIP44Node = await getAddressAtIndex(hathorNode, addressIndex);
+  const address: string = addressNodeToP2PKHAddress(addressNode, hathorNode);
+
   await snap.request({
     method: 'snap_dialog',
     params: {
       type: 'Confirmation',
       content: panel([
         heading('Sign message'),
-        text(`${origin} is trying to sign the following message: ${message}.`),
+        text(`${origin} is trying to sign the following message:`),
+        text(message),
+        text(`With the following address: ${address}`),
       ]),
     },
   });
 
-  const path = [ 'm', '44\'', HATHOR_BIP44_CODE, '0\'' ];
+  const privateKeyBuffer = Buffer.from(trimHexPrefix(addressNode.privateKey), 'hex')
 
-  const slip10Node = await snap.request({
-    method: 'snap_getBip32Entropy',
-    params: {
-      path,
-      curve: CRYPTO_CURVE
-    },
-  }) as SLIP10Node;
-
-  // const privateKeyBuffer = Buffer.from(trimHexPrefix(slip10Node.privateKey), 'hex')
-  // const keyPair = ECPair.fromPrivateKey(privateKeyBuffer);
-
-  // const signature = bitcoinMessage.sign(message, keyPair.privateKey, keyPair.compressed)
+  const signature = bitcoinMessage
+    .sign(
+      message,
+      privateKeyBuffer,
+      true,
+      hathorNetwork.messagePrefix,
+    )
+    .toString('base64');
 
   return {
-    signedMessage: '--', // signature.toString('base64'),
+    signedMessage: signature, // signature.toString('base64'),
   };
 }

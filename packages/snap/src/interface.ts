@@ -14,6 +14,14 @@ export interface SignHathorMessage {
   method: 'htr_signmessage';
   params: {
     message: string;
+    addressIndex: number;
+  };
+}
+
+export interface SignHathorTransaction {
+  method: 'htr_signtransaction';
+  params: {
+    message: string;
   };
 }
 
@@ -31,6 +39,7 @@ export type MetamaskHTRRpcRequest =
   | GetHathorWalletId
   | GetHathorAddresses
   | SignHathorMessage
+  | SignHathorTransaction
 
 export type HTRMethodCallback = (
   originString: string,

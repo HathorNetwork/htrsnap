@@ -30,6 +30,7 @@
     <button class="getHathorAuthXPubKey">Get hathor Auth xpubkey</button>
     <button class="getHathorWalletId">Get hathor wallet id</button>
     <button class="signHathorMessage">Sign hathor message</button>
+    <button class="signHathorTransaction">Sign hathor transaction</button>
     <button class="getHathorAddresses">Get hathor addresses</button>
 
     <div id="extendedPubKey" style="margin-top:5px"></div>
@@ -38,14 +39,18 @@
     <div id="txHex" style="margin-top:5px"></div>
   </body>
 
+  <script src="./wallet-lib/index.js"></script>
   <script>
+    console.log(window.hathorLib);
     const snapId = `local:${window.location.href}`;
+    console.log('Snapid: ', snapId);
 
     const connectButton = document.querySelector('button.connect')
     const getHathorXPubKeyButton = document.querySelector('button.getHathorXPubKey');
     const getHathorAuthXPubKeyButton = document.querySelector('button.getHathorAuthXPubKey');
     const getHathorWalletIdButton = document.querySelector('button.getHathorWalletId');
     const signHathorMessageButton = document.querySelector('button.signHathorMessage');
+    const signHathorTransactionButton = document.querySelector('button.signHathorTransaction');
     const getHathorAddressesButton = document.querySelector('button.getHathorAddresses');
 
     connectButton.addEventListener('click', connect)
@@ -53,6 +58,7 @@
     getHathorAuthXPubKeyButton.addEventListener('click', getHathorAuthXPubKey);
     getHathorWalletIdButton.addEventListener('click', getHathorWalletId);
     signHathorMessageButton.addEventListener('click', signHathorMessage);
+    signHathorTransactionButton.addEventListener('click', signHathorTransaction);
     getHathorAddressesButton.addEventListener('click', getHathorAddresses);
 
     async function getHathorAddresses() {
@@ -81,6 +87,26 @@
       xpubNode.innerHTML = text;
     }
 
+    async function signHathorTransaction() {
+      const response = await ethereum.request({
+        method: 'wallet_invokeSnap',
+        params: {
+          snapId,
+          request: {
+            method: 'htr_signtransaction',
+            params: {
+              message: 'example-message-to-sign'
+            },
+          }
+        }
+      })
+
+      console.log('response: ', response);
+
+      const xpubNode = document.getElementById("extendedPubKey")
+      xpubNode.textContent = `Signed message: ${response.signedMessage}`
+    }
+
     async function signHathorMessage() {
       const response = await ethereum.request({
         method: 'wallet_invokeSnap',
@@ -89,7 +115,8 @@
           request: {
             method: 'htr_signmessage',
             params: {
-              message: '--',
+              message: 'example-message-to-sign',
+              addressIndex: 1,
             },
           }
         }
